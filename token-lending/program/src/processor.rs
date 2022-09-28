@@ -2358,8 +2358,8 @@ fn get_pyth_price(pyth_price_info: &AccountInfo, clock: &Clock) -> Result<Decima
     Ok(market_price)
 }
 
-fn get_switchboard_price(
-    switchboard_feed_info: &AccountInfo,
+fn get_switchboard_price<'a>(
+    switchboard_feed_info: &'a AccountInfo<'a>,
     clock: &Clock,
 ) -> Result<Decimal, ProgramError> {
     const STALE_AFTER_SLOTS_ELAPSED: u64 = 240;
@@ -2406,8 +2406,8 @@ fn get_switchboard_price(
     Decimal::from(price).try_div(price_quotient)
 }
 
-fn get_switchboard_price_v2(
-    switchboard_feed_info: &AccountInfo,
+fn get_switchboard_price_v2<'a>(
+    switchboard_feed_info: &'a AccountInfo<'a>,
     clock: &Clock,
 ) -> Result<Decimal, ProgramError> {
     const STALE_AFTER_SLOTS_ELAPSED: u64 = 240;
