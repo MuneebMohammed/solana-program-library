@@ -232,7 +232,7 @@ fn process_init_reserve(
     let reserve_collateral_supply_info = next_account_info(account_info_iter)?;
     let pyth_product_info = next_account_info(account_info_iter)?;
     let pyth_price_info = next_account_info(account_info_iter)?;
-    let switchboard_feed_info: &'a AccountInfo<'a> = next_account_info(account_info_iter)?;
+    let switchboard_feed_info = next_account_info(account_info_iter)?;
     let lending_market_info = next_account_info(account_info_iter)?;
     let lending_market_authority_info = next_account_info(account_info_iter)?;
     let lending_market_owner_info = next_account_info(account_info_iter)?;
@@ -411,7 +411,7 @@ fn _refresh_reserve<'a>(
     program_id: &Pubkey,
     reserve_info: &AccountInfo<'a>,
     pyth_price_info: &AccountInfo<'a>,
-    switchboard_feed_info: &'a AccountInfo<'a>,
+    switchboard_feed_info: &AccountInfo<'a>,
     clock: &Clock,
 ) -> ProgramResult {
     let mut reserve = Reserve::unpack(&reserve_info.data.borrow())?;
@@ -2268,8 +2268,8 @@ fn get_pyth_product_quote_currency(pyth_product: &pyth::Product) -> Result<[u8; 
     Err(LendingError::InvalidOracleConfig.into())
 }
 
-fn get_price<'a>(
-    switchboard_feed_info: &'a AccountInfo<'a>,
+fn get_price(
+    switchboard_feed_info: &AccountInfo,
     pyth_price_account_info: &AccountInfo,
     clock: &Clock,
 ) -> Result<Decimal, ProgramError> {
@@ -2358,8 +2358,8 @@ fn get_pyth_price(pyth_price_info: &AccountInfo, clock: &Clock) -> Result<Decima
     Ok(market_price)
 }
 
-fn get_switchboard_price<'a>(
-    switchboard_feed_info: &'a AccountInfo<'a>,
+fn get_switchboard_price(
+    switchboard_feed_info: &AccountInfo,
     clock: &Clock,
 ) -> Result<Decimal, ProgramError> {
     const STALE_AFTER_SLOTS_ELAPSED: u64 = 240;
@@ -2406,8 +2406,8 @@ fn get_switchboard_price<'a>(
     Decimal::from(price).try_div(price_quotient)
 }
 
-fn get_switchboard_price_v2<'a>(
-    switchboard_feed_info: &'a AccountInfo<'a>,
+fn get_switchboard_price_v2(
+    switchboard_feed_info: &AccountInfo,
     clock: &Clock,
 ) -> Result<Decimal, ProgramError> {
     const STALE_AFTER_SLOTS_ELAPSED: u64 = 240;
@@ -2664,7 +2664,7 @@ fn validate_pyth_keys(
 /// validates switchboard AccountInfo
 fn validate_switchboard_keys(
     lending_market: &LendingMarket,
-    switchboard_feed_info: &'a AccountInfo,
+    switchboard_feed_info: &AccountInfo,
 ) -> ProgramResult {
     if *switchboard_feed_info.key == solend_program::NULL_PUBKEY {
         return Ok(());
