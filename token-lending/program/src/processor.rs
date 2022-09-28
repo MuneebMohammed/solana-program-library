@@ -232,7 +232,7 @@ fn process_init_reserve(
     let reserve_collateral_supply_info = next_account_info(account_info_iter)?;
     let pyth_product_info = next_account_info(account_info_iter)?;
     let pyth_price_info = next_account_info(account_info_iter)?;
-    let switchboard_feed_info = next_account_info(account_info_iter)?;
+    let switchboard_feed_info: &'a AccountInfo<'a> = next_account_info(account_info_iter)?;
     let lending_market_info = next_account_info(account_info_iter)?;
     let lending_market_authority_info = next_account_info(account_info_iter)?;
     let lending_market_owner_info = next_account_info(account_info_iter)?;
@@ -411,7 +411,7 @@ fn _refresh_reserve<'a>(
     program_id: &Pubkey,
     reserve_info: &AccountInfo<'a>,
     pyth_price_info: &AccountInfo<'a>,
-    switchboard_feed_info: &AccountInfo<'a>,
+    switchboard_feed_info: &'a AccountInfo<'a>,
     clock: &Clock,
 ) -> ProgramResult {
     let mut reserve = Reserve::unpack(&reserve_info.data.borrow())?;
@@ -2664,7 +2664,7 @@ fn validate_pyth_keys(
 /// validates switchboard AccountInfo
 fn validate_switchboard_keys(
     lending_market: &LendingMarket,
-    switchboard_feed_info: &AccountInfo,
+    switchboard_feed_info: &'a AccountInfo,
 ) -> ProgramResult {
     if *switchboard_feed_info.key == solend_program::NULL_PUBKEY {
         return Ok(());
